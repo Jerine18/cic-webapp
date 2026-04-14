@@ -43,6 +43,74 @@ module.exports = {
         marcellus: ['Marcellus', 'serif'],
         metropolis: ['Metropolis', 'sans-serif'],
       },
+      keyframes: {
+        'neon-pulse': {
+          '0%, 100%': {
+            textShadow:
+              '0 0 10px #f5ec3a, 0 0 20px #f5ec3a, 0 0 40px #f5ec3a, 0 0 80px #f5ec3a',
+          },
+          '50%': {
+            textShadow:
+              '0 0 5px #f5ec3a, 0 0 10px #f5ec3a, 0 0 20px #f5ec3a',
+          },
+        },
+        'glow-flicker': {
+          '0%': {
+            textShadow: '0 0 2px rgba(255,255,255,0.3)',
+            opacity: '0.5',
+          },
+          '8%': {
+            textShadow:
+              '0 0 10px #ffffff, 0 0 30px rgba(255,255,255,0.7), 0 0 60px rgba(255,255,255,0.4)',
+            opacity: '1',
+          },
+          '12%': {
+            textShadow: '0 0 2px rgba(255,255,255,0.4)',
+            opacity: '0.6',
+          },
+          '18%': {
+            textShadow:
+              '0 0 10px #ffffff, 0 0 30px rgba(255,255,255,0.7), 0 0 60px rgba(255,255,255,0.4)',
+            opacity: '1',
+          },
+          '22%': {
+            textShadow: '0 0 3px rgba(255,255,255,0.3)',
+            opacity: '0.55',
+          },
+          '30%': {
+            textShadow:
+              '0 0 10px #ffffff, 0 0 30px rgba(255,255,255,0.7), 0 0 60px rgba(255,255,255,0.4)',
+            opacity: '1',
+          },
+          '35%': {
+            textShadow: '0 0 2px rgba(255,255,255,0.4)',
+            opacity: '0.7',
+          },
+          '45%': {
+            textShadow:
+              '0 0 10px #ffffff, 0 0 30px rgba(255,255,255,0.7), 0 0 60px rgba(255,255,255,0.4)',
+            opacity: '1',
+          },
+          '50%': {
+            textShadow: '0 0 4px rgba(255,255,255,0.5)',
+            opacity: '0.8',
+          },
+          '60%, 100%': {
+            textShadow:
+              '0 0 10px #ffffff, 0 0 30px rgba(255,255,255,0.7), 0 0 60px rgba(255,255,255,0.4), 0 0 100px rgba(255,255,255,0.2)',
+            opacity: '1',
+          },
+        },
+        'scroll-photos': {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+      },
+      animation: {
+        'neon-pulse': 'neon-pulse 2s ease-in-out infinite',
+        'glow-flicker': 'glow-flicker 5s ease-in-out 1 forwards',
+        'scroll-photos': 'scroll-photos 30s linear infinite',
+      },
     },
   },
   plugins: [],

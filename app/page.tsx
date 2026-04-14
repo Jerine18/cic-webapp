@@ -6,6 +6,9 @@ import Header from '@/components/Header'
 import HeroSection from '@/components/landing/HeroSection'
 import ServicesSection from '@/components/landing/ServicesSection'
 import AboutSection from '@/components/landing/AboutSection'
+import WaveDivider from '@/components/landing/WaveDivider'
+import PhotoStrip from '@/components/landing/PhotoStrip'
+
 import Footer from '@/components/landing/Footer'
 import RequestForm from '@/components/RequestForm'
 import { useRequestForm } from '@/hooks/useRequestForm'
@@ -29,20 +32,27 @@ export default function HomePage() {
     const handleStartRequest = (event?: any) => {
       const serviceType = event?.detail?.serviceType
       setShowRequestForm(true)
-      
-      // If service type is provided, automatically select it
+
       if (serviceType) {
         handleTypeSelect(serviceType)
       }
-      
+
       setTimeout(() => {
         const servicesSection = document.getElementById('services-form')
         servicesSection?.scrollIntoView({ behavior: 'smooth' })
       }, 100)
     }
 
+    const handleGoToLanding = () => {
+      setShowRequestForm(false)
+    }
+
     window.addEventListener('startRequest', handleStartRequest)
-    return () => window.removeEventListener('startRequest', handleStartRequest)
+    window.addEventListener('goToLanding', handleGoToLanding)
+    return () => {
+      window.removeEventListener('startRequest', handleStartRequest)
+      window.removeEventListener('goToLanding', handleGoToLanding)
+    }
   }, [handleTypeSelect])
 
   const handleFormCancel = () => {
@@ -53,7 +63,7 @@ export default function HomePage() {
   if (showRequestForm) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-        <Header isLandingPage={false} />
+        <Header isLandingPage={false} isFormPage={true} />
         <main id="services-form" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
           <div className="max-w-5xl mx-auto">
             {successMessage ? (
@@ -125,11 +135,30 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{ background: '#060e33' }}>
       <Header isLandingPage={true} />
-      <HeroSection />
+      {/* Shared background for Hero + About */}
+      <div className="relative">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/images/Main_Background.jpg')" }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(to bottom, rgba(11,18,50,0.65) 0%, rgba(6,14,51,0.8) 50%, rgba(3,7,30,0.92) 100%)',
+          }}
+        />
+        <div className="relative z-10">
+          <HeroSection />
+          <AboutSection />
+          <WaveDivider />
+        </div>
+      </div>
       <ServicesSection />
-      <AboutSection />
+      <PhotoStrip />
+
       <Footer />
     </div>
   )
