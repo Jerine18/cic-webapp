@@ -14,10 +14,7 @@ interface HeaderProps {
 export default function Header({ isLandingPage = false, isFormPage = false }: HeaderProps = {}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const { user, profile, isConfigured } = useAuth()
-
-  // Route the name link based on role: admin → admin dashboard, user → user portal
-  const accountHref = profile?.role === 'admin' ? '/dashboard' : '/userpage'
+  const { user, isConfigured } = useAuth()
 
   // Extract username from email (e.g., "jdiaz" from "jdiaz.a12240995@umak.edu.ph")
   const username = user?.email?.split('@')[0]?.split('.')[0] || ''
@@ -89,7 +86,7 @@ export default function Header({ isLandingPage = false, isFormPage = false }: He
 
             {isConfigured && user ? (
               <Link
-                href={accountHref}
+                href="/dashboard"
                 className="px-6 py-2.5 bg-umak-yellow text-umak-blue rounded-lg font-metropolis font-bold text-sm uppercase tracking-wider shadow-sm flex items-center gap-2 transition-all duration-300 border-2 border-umak-yellow hover:bg-transparent hover:text-umak-yellow hover:border-umak-yellow"
               >
                 <User size={16} />
@@ -98,9 +95,9 @@ export default function Header({ isLandingPage = false, isFormPage = false }: He
             ) : (
               <Link
                 href="/login"
-                className="px-6 py-2.5 bg-umak-yellow text-umak-blue rounded-lg font-metropolis font-bold text-sm uppercase tracking-wider shadow-sm flex items-center gap-2 border-2 border-transparent transition-all duration-300 hover:bg-transparent hover:text-umak-yellow hover:border-umak-yellow hover:shadow-[0_0_15px_rgba(255,215,0,0.5)]"
+                className="px-6 py-2.5 bg-umak-yellow text-umak-blue rounded-lg hover:bg-yellow-300 transition-all font-metropolis font-bold text-sm uppercase tracking-wider shadow-sm flex items-center gap-2"
               >
-                <User size={18} />
+                <Image src="/images/Login.png" alt="Login" width={18} height={18} className="object-contain" />
                 Login
               </Link>
             )}
@@ -152,7 +149,7 @@ export default function Header({ isLandingPage = false, isFormPage = false }: He
 
             {isConfigured && user ? (
               <Link
-                href={accountHref}
+                href="/dashboard"
                 onClick={() => setIsMenuOpen(false)}
                 className="flex items-center justify-center gap-2 px-6 py-2.5 bg-umak-yellow text-umak-blue rounded-lg font-metropolis font-bold text-sm uppercase tracking-wider transition-all duration-300 border-2 border-umak-yellow active:bg-transparent active:text-umak-yellow active:border-umak-yellow"
               >
@@ -162,9 +159,9 @@ export default function Header({ isLandingPage = false, isFormPage = false }: He
             ) : (
               <Link
                 href="/login"
-                className="flex items-center justify-center gap-2 px-6 py-2.5 bg-umak-yellow text-umak-blue rounded-lg font-metropolis font-bold text-sm uppercase tracking-wider border-2 border-transparent transition-all duration-300 active:bg-transparent active:text-umak-yellow active:border-umak-yellow active:shadow-[0_0_15px_rgba(255,215,0,0.5)]"
+                className="flex items-center justify-center gap-2 px-6 py-2.5 bg-umak-yellow text-umak-blue rounded-lg hover:bg-yellow-300 transition-all font-metropolis font-bold text-sm uppercase tracking-wider"
               >
-                <User size={18} />
+                <Image src="/images/Login.png" alt="Login" width={18} height={18} className="object-contain" />
                 Login
               </Link>
             )}

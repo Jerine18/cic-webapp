@@ -29,7 +29,7 @@ export default function CTASection() {
                     const event = new CustomEvent('startRequest')
                     window.dispatchEvent(event)
                   }}
-                  className="inline-flex items-center justify-center px-8 py-4 bg-umak-yellow text-umak-blue rounded-lg font-bold font-metropolis text-sm uppercase tracking-wider shadow-lg border-2 border-transparent transition-all duration-300 hover:bg-transparent hover:text-umak-yellow hover:border-umak-yellow hover:shadow-[0_0_20px_rgba(255,215,0,0.6)] group"
+                  className="inline-flex items-center justify-center px-8 py-4 bg-umak-yellow text-umak-blue rounded-lg hover:bg-yellow-400 transition-all font-bold font-metropolis text-sm uppercase tracking-wider shadow-lg hover:shadow-xl group"
                 >
                   <span>Start Request</span>
                   <svg 
