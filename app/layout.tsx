@@ -11,6 +11,9 @@ const marcellus = Marcellus({
 export const metadata = {
   title: 'CIC Submission Portal - University of Makati',
   description: 'Center for Integrated Communications - Submission Management System',
+  icons: {
+    icon: '/images/cic_logo_colored.png',
+  },
 }
 
 export default function RootLayout({

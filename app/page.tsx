@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { CheckCircle } from 'lucide-react'
 import Header from '@/components/Header'
 import HeroSection from '@/components/landing/HeroSection'
@@ -13,8 +14,11 @@ import Footer from '@/components/landing/Footer'
 import RequestForm from '@/components/RequestForm'
 import { useRequestForm } from '@/hooks/useRequestForm'
 import { REQUEST_TYPES } from '@/lib/constants'
+import { useAuth } from '@/contexts/AuthContext'
 
 export default function HomePage() {
+  const router = useRouter()
+  const { user, loading: authLoading } = useAuth()
   const [showRequestForm, setShowRequestForm] = useState(false)
   const {
     selectedType,
@@ -30,6 +34,11 @@ export default function HomePage() {
 
   useEffect(() => {
     const handleStartRequest = (event?: any) => {
+      if (!user) {
+        router.push('/login')
+        return
+      }
+
       const serviceType = event?.detail?.serviceType
       setShowRequestForm(true)
 
@@ -53,7 +62,27 @@ export default function HomePage() {
       window.removeEventListener('startRequest', handleStartRequest)
       window.removeEventListener('goToLanding', handleGoToLanding)
     }
-  }, [handleTypeSelect])
+  }, [handleTypeSelect, user, router])
+
+  // Safety net: if somehow on the form view without auth, kick back to login
+  useEffect(() => {
+    if (showRequestForm && !authLoading && !user) {
+      setShowRequestForm(false)
+      router.push('/login')
+    }
+  }, [showRequestForm, user, authLoading, router])
+
+  // Handle a pending service type forwarded from the user portal
+  useEffect(() => {
+    if (authLoading) return
+    const pending = sessionStorage.getItem('pendingServiceType')
+    if (pending) {
+      sessionStorage.removeItem('pendingServiceType')
+      window.dispatchEvent(
+        new CustomEvent('startRequest', { detail: { serviceType: pending } }),
+      )
+    }
+  }, [authLoading, user])
 
   const handleFormCancel = () => {
     setShowRequestForm(false)
