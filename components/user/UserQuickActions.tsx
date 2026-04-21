@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { Plus } from 'lucide-react'
 import { REQUEST_TYPES } from '@/lib/constants'
@@ -10,6 +11,17 @@ export default function UserQuickActions() {
   return (
     <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-umak-blue to-blue-900 p-6 sm:p-8 lg:p-10 shadow-lg">
       <div className="absolute top-0 right-0 w-72 h-72 bg-umak-yellow opacity-10 rounded-full blur-3xl transform translate-x-24 -translate-y-24 pointer-events-none" />
+
+      {/* Heron Legacy Background Image */}
+      <div className="absolute -right-[6.25rem] top-0 h-full w-3/5 pointer-events-none select-none">
+        <Image
+          src="/images/heronlegacy.png"
+          alt=""
+          fill
+          className="object-cover opacity-60 object-[right_25%]"
+          aria-hidden="true"
+        />
+      </div>
 
       <div className="relative">
         <h2 className="font-marcellus text-2xl sm:text-3xl text-white mb-2">

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 import { User } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
@@ -14,7 +15,9 @@ interface HeaderProps {
 export default function Header({ isLandingPage = false, isFormPage = false }: HeaderProps = {}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [activeSection, setActiveSection] = useState<'home' | 'about' | 'services'>('home')
   const { user, profile, isConfigured } = useAuth()
+  const pathname = usePathname()
 
   // Route the name link based on role: admin → admin dashboard, user → user portal
   const accountHref = profile?.role === 'admin' ? '/dashboard' : '/userpage'
@@ -23,13 +26,47 @@ export default function Header({ isLandingPage = false, isFormPage = false }: He
   const username = user?.email?.split('@')[0]?.split('.')[0] || ''
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20)
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20)
+      if (isLandingPage && window.scrollY < 200) setActiveSection('home')
+    }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  }, [isLandingPage])
 
-  const navLinkClass =
-    'relative font-metropolis text-sm font-semibold text-white transition-colors after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-0 after:bg-umak-yellow after:transition-all after:duration-300 hover:after:w-full hover:text-umak-yellow'
+  // Scroll-spy for #about and #services on the landing page
+  useEffect(() => {
+    if (!isLandingPage) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id as 'about' | 'services')
+          }
+        })
+      },
+      { rootMargin: '-40% 0px -50% 0px' },
+    )
+    ;['about', 'services'].forEach((id) => {
+      const el = document.getElementById(id)
+      if (el) observer.observe(el)
+    })
+    return () => observer.disconnect()
+  }, [isLandingPage])
+
+  const isOnLanding = pathname === '/'
+  const isHomeActive = isOnLanding && activeSection === 'home'
+  const isAboutActive = isOnLanding && isLandingPage && activeSection === 'about'
+  const isServicesActive = isOnLanding && isLandingPage && activeSection === 'services'
+
+  const navLinkBase =
+    'relative font-metropolis text-sm font-semibold transition-colors after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:bg-umak-yellow after:transition-all after:duration-300 hover:after:w-full hover:text-umak-yellow'
+  const navLinkClass = (active: boolean) =>
+    `${navLinkBase} ${active ? 'text-umak-yellow after:w-full' : 'text-white after:w-0'}`
+  const mobileLinkClass = (active: boolean) =>
+    `block font-metropolis text-sm font-medium py-2 transition-colors ${
+      active ? 'text-umak-yellow' : 'text-white hover:text-umak-yellow'
+    }`
 
   const headerBg = scrolled
     ? 'bg-umak-blue/80 backdrop-blur-md shadow-lg'
@@ -78,11 +115,23 @@ export default function Header({ isLandingPage = false, isFormPage = false }: He
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
             <div className="flex items-center gap-8 mr-8">
-              <Link href="/" className={navLinkClass}>Home</Link>
+              <Link href="/" className={navLinkClass(isHomeActive)}>Home</Link>
               {isLandingPage && (
                 <>
-                  <a href="#about" className={navLinkClass}>About</a>
-                  <a href="#services" className={navLinkClass}>Services</a>
+                  <a
+                    href="#about"
+                    onClick={() => setActiveSection('about')}
+                    className={navLinkClass(isAboutActive)}
+                  >
+                    About
+                  </a>
+                  <a
+                    href="#services"
+                    onClick={() => setActiveSection('services')}
+                    className={navLinkClass(isServicesActive)}
+                  >
+                    Services
+                  </a>
                 </>
               )}
             </div>
@@ -127,7 +176,7 @@ export default function Header({ isLandingPage = false, isFormPage = false }: He
             <Link
               href="/"
               onClick={() => setIsMenuOpen(false)}
-              className="block text-white hover:text-umak-yellow font-metropolis text-sm font-medium py-2 transition-colors"
+              className={mobileLinkClass(isHomeActive)}
             >
               Home
             </Link>
@@ -135,15 +184,21 @@ export default function Header({ isLandingPage = false, isFormPage = false }: He
               <>
                 <a
                   href="#about"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="block text-white hover:text-umak-yellow font-metropolis text-sm font-medium py-2 transition-colors"
+                  onClick={() => {
+                    setIsMenuOpen(false)
+                    setActiveSection('about')
+                  }}
+                  className={mobileLinkClass(isAboutActive)}
                 >
                   About
                 </a>
                 <a
                   href="#services"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="block text-white hover:text-umak-yellow font-metropolis text-sm font-medium py-2 transition-colors"
+                  onClick={() => {
+                    setIsMenuOpen(false)
+                    setActiveSection('services')
+                  }}
+                  className={mobileLinkClass(isServicesActive)}
                 >
                   Services
                 </a>

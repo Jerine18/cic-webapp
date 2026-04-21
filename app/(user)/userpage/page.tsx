@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { supabaseClient } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
+import { getDisplayName } from '@/lib/get-display-name'
 import UserPageHeader from '@/components/user/UserPageHeader'
 import UserQuickActions from '@/components/user/UserQuickActions'
 import UserDashboardStats from '@/components/user/UserDashboardStats'
@@ -54,7 +55,13 @@ export default function UserDashboardPage() {
     loadData()
   }, [user])
 
-  const firstName = profile?.full_name?.split(' ')[0] || 'there'
+  const displayName = getDisplayName(user, profile)
+  const firstNameRaw = displayName.split(/\s+/)[0] || 'there'
+  // Normalise all-caps names like "JERINE CARL DIAZ" → "Jerine"
+  const firstName =
+    firstNameRaw === firstNameRaw.toUpperCase() && firstNameRaw.length > 1
+      ? firstNameRaw.charAt(0) + firstNameRaw.slice(1).toLowerCase()
+      : firstNameRaw
 
   return (
     <div className="min-h-screen">

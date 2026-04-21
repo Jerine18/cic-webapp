@@ -132,7 +132,7 @@ export default function LoginPage() {
           <p className="text-white/70 text-sm font-metropolis">
             {isSignUp
               ? 'Sign up to access the dashboard'
-              : 'Sign in to access your dashboard'}
+              : 'Sign in to submit your request'}
           </p>
         </div>
 

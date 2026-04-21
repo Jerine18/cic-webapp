@@ -12,6 +12,7 @@ import {
   ChevronRight,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import { getDisplayName, getInitials } from '@/lib/get-display-name'
 
 interface UserSidebarProps {
   isOpen: boolean
@@ -32,17 +33,9 @@ export default function UserSidebar({ isOpen, onToggle }: UserSidebarProps) {
     await signOut()
   }
 
-  const getInitials = () => {
-    if (profile?.full_name) {
-      return profile.full_name
-        .split(' ')
-        .map((n) => n[0])
-        .join('')
-        .toUpperCase()
-        .slice(0, 2)
-    }
-    return user?.email?.[0].toUpperCase() || 'U'
-  }
+  const displayName = getDisplayName(user, profile)
+  const initials = getInitials(displayName) || user?.email?.[0]?.toUpperCase() || 'U'
+  const email = user?.email || ''
 
   return (
     <>
@@ -123,15 +116,18 @@ export default function UserSidebar({ isOpen, onToggle }: UserSidebarProps) {
             <>
               <div className="flex items-center gap-3 px-4 py-3 mb-2">
                 <div className="w-10 h-10 rounded-full bg-umak-yellow flex items-center justify-center text-umak-blue font-bold font-marcellus text-lg flex-shrink-0">
-                  {getInitials()}
+                  {initials}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold font-metropolis truncate">
-                    {profile?.full_name || user?.email || 'User'}
+                  <p className="text-sm font-medium font-metropolis text-white truncate">
+                    {displayName}
                   </p>
-                  <p className="text-xs text-gray-300 font-metropolis truncate">
-                    {user?.email}
-                  </p>
+                  <span
+                    title={email}
+                    className="block text-xs text-white/50 font-metropolis truncate"
+                  >
+                    {email}
+                  </span>
                 </div>
               </div>
               <button
@@ -144,8 +140,11 @@ export default function UserSidebar({ isOpen, onToggle }: UserSidebarProps) {
             </>
           ) : (
             <div className="flex flex-col items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-umak-yellow flex items-center justify-center text-umak-blue font-bold font-marcellus text-lg">
-                {getInitials()}
+              <div
+                className="w-10 h-10 rounded-full bg-umak-yellow flex items-center justify-center text-umak-blue font-bold font-marcellus text-lg"
+                title={displayName}
+              >
+                {initials}
               </div>
               <button
                 onClick={handleLogout}

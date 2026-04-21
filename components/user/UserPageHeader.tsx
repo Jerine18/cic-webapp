@@ -6,9 +6,15 @@ interface UserPageHeaderProps {
   title: string
   subtitle?: string
   onMenuClick?: () => void
+  hideBottomBorder?: boolean
 }
 
-export default function UserPageHeader({ title, subtitle, onMenuClick }: UserPageHeaderProps) {
+export default function UserPageHeader({
+  title,
+  subtitle,
+  onMenuClick,
+  hideBottomBorder = false,
+}: UserPageHeaderProps) {
   return (
     <header className="bg-white shadow-sm border-b-4 border-umak-yellow sticky top-0 z-30">
       <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 flex items-center gap-4">

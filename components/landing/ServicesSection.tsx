@@ -1,72 +1,25 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
-
-interface Service {
-  id: string
-  title: string
-  description: string
-  icon: string
-  status?: 'available' | 'coming-soon' | 'on-hold'
-  requestType?: string
-}
-
-const services: Service[] = [
-  {
-    id: 'design',
-    title: 'Corporate Requisites',
-    description: 'Managing requests for the design or approval of plaques, medals, trophies, and corporate giveaways for official recognition and events.',
-    icon: '/images/Corporate.png',
-    status: 'available',
-    requestType: 'design',
-  },
-  {
-    id: 'branding',
-    title: 'Design and Branding',
-    description: 'Guidance to ensure your creative materials align with University brand guidelines before production or release.',
-    icon: '/images/Design_and_Branding.png',
-    status: 'available',
-    requestType: 'branding',
-  },
-  {
-    id: 'coverage',
-    title: 'Event Coverage',
-    description: 'Photo documentation and basic coverage for university events and activities.',
-    icon: '/images/Event_Coverage.png',
-    status: 'available',
-    requestType: 'coverage',
-  },
-  {
-    id: 'video',
-    title: 'Footage',
-    description: 'Support for recording video messages and other university-related video content.',
-    icon: '/images/Footage.png',
-    status: 'available',
-    requestType: 'video',
-  },
-  {
-    id: 'social-media',
-    title: 'Social Media',
-    description: 'Posting publicly available, university-wide announcements, congratulatory messages, and similar content on official platforms.',
-    icon: '/images/Social_Media.png',
-    status: 'available',
-    requestType: 'social-media',
-  },
-  {
-    id: 'website',
-    title: 'Website Content Update',
-    description: 'Request new website entries or updates to existing pages for your office or unit.',
-    icon: '/images/Web.png',
-    status: 'available',
-    requestType: 'website',
-  },
-]
+import { useAuth } from '@/contexts/AuthContext'
+import { SERVICES } from '@/lib/services'
 
 export default function ServicesSection() {
   const [hoveredService, setHoveredService] = useState<string | null>(null)
   const { ref, isVisible } = useScrollAnimation(80)
+  const router = useRouter()
+  const { user } = useAuth()
+
+  const handleRequestClick = (requestType?: string) => {
+    if (!requestType) return
+    if (!user) {
+      router.push('/login')
+      return
+    }
+    router.push(`/usersubmitrequest/${requestType}`)
+  }
 
   const getStatusBadge = (status?: string) => {
     if (status === 'coming-soon') {
@@ -121,12 +74,13 @@ export default function ServicesSection() {
 
         {/* Cards grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {services.map((service) => {
-            const isHovered = hoveredService === service.id
+          {SERVICES.map((service) => {
+            const isHovered = hoveredService === service.serviceType
+            const Icon = service.icon
             return (
               <div
-                key={service.id}
-                onMouseEnter={() => setHoveredService(service.id)}
+                key={service.serviceType}
+                onMouseEnter={() => setHoveredService(service.serviceType)}
                 onMouseLeave={() => setHoveredService(null)}
                 className={`relative flex flex-col rounded-3xl overflow-hidden transition-all duration-300 ease-out ${
                   service.status !== 'available' ? 'opacity-70' : ''
@@ -149,17 +103,13 @@ export default function ServicesSection() {
 
                   {/* Icon */}
                   <div className="mb-5">
-                    <Image
-                      src={service.icon}
-                      alt={service.title}
-                      width={48}
-                      height={48}
-                      className="object-contain transition-all duration-300"
-                      style={
-                        isHovered
-                          ? { filter: 'brightness(0) saturate(100%) invert(83%) sepia(40%) saturate(1000%) hue-rotate(5deg) brightness(104%) contrast(104%)' }
-                          : undefined
-                      }
+                    <Icon
+                      size={24}
+                      strokeWidth={1.75}
+                      className={`transition-colors duration-300 ${
+                        isHovered ? 'text-umak-yellow' : 'text-white'
+                      }`}
+                      aria-hidden="true"
                     />
                   </div>
 
@@ -186,12 +136,7 @@ export default function ServicesSection() {
                   {/* Request button — always visible, left-aligned */}
                   {service.status === 'available' && (
                     <button
-                      onClick={() => {
-                        const event = new CustomEvent('startRequest', {
-                          detail: { serviceType: service.requestType },
-                        })
-                        window.dispatchEvent(event)
-                      }}
+                      onClick={() => handleRequestClick(service.serviceType)}
                       className="self-start px-5 py-2 rounded-lg font-metropolis font-bold text-xs uppercase tracking-wider transition-all duration-300 border-2"
                       style={{
                         background: '#FFD700',

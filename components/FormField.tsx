@@ -27,18 +27,18 @@ export default function FormField({
   options,
   rows = 6,
   min,
-  helpText
+  helpText,
 }: FormFieldProps) {
-  const baseInputClasses = `w-full px-4 sm:px-5 py-3 sm:py-4 border ${
-    error ? 'border-red-500' : 'border-gray-300'
-  } rounded-md focus:border-umak-blue focus:ring-2 focus:ring-umak-blue focus:ring-opacity-20 focus:outline-none transition-all font-metropolis text-sm sm:text-base font-normal`
+  const baseInputClasses = `w-full px-3 py-2.5 bg-white border ${
+    error ? 'border-red-500' : 'border-gray-200'
+  } rounded-md focus:border-umak-blue focus:ring-2 focus:ring-umak-blue/20 focus:outline-none transition-all font-metropolis text-sm`
 
   return (
     <div>
-      <label className="block text-xs text-gray-700 mb-2 sm:mb-3 font-metropolis font-bold uppercase tracking-widest">
+      <label className="block text-xs text-umak-blue mb-2 font-metropolis font-bold uppercase tracking-widest">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
-      
+
       {type === 'textarea' ? (
         <textarea
           name={name}
@@ -75,16 +75,12 @@ export default function FormField({
           min={min}
         />
       )}
-      
+
       {helpText && !error && (
-        <p className="text-xs sm:text-sm text-gray-500 mt-2 font-metropolis font-normal">
-          {helpText}
-        </p>
+        <p className="text-xs text-gray-500 mt-2 font-metropolis">{helpText}</p>
       )}
-      
-      {error && (
-        <p className="text-red-500 text-xs mt-1 font-metropolis">{error}</p>
-      )}
+
+      {error && <p className="text-red-500 text-xs mt-1 font-metropolis">{error}</p>}
     </div>
   )
 }
