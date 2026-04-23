@@ -30,22 +30,34 @@ export default function UserDashboardPage() {
         return
       }
       try {
-        const { data, error } = await supabaseClient
-          .from('submissions')
-          .select('id, type, details, status, created_at')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
+        // Two parallel queries:
+        //   1. a status-only pull for counting (cheap — one column, all rows)
+        //   2. a capped pull for the Recent Submissions list (only what we
+        //      actually render — 5 rows, five columns)
+        const [statusesRes, recentRes] = await Promise.all([
+          supabaseClient
+            .from('submissions')
+            .select('status')
+            .eq('user_id', user.id),
+          supabaseClient
+            .from('submissions')
+            .select('id, type, details, status, created_at')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false })
+            .limit(5),
+        ])
 
-        if (error) throw error
+        if (statusesRes.error) throw statusesRes.error
+        if (recentRes.error) throw recentRes.error
 
-        const all = (data || []) as SubmissionRow[]
+        const statuses = (statusesRes.data || []) as { status: string }[]
         setStats({
-          total: all.length,
-          pending: all.filter((s) => s.status === 'Pending').length,
-          inProgress: all.filter((s) => s.status === 'In Progress').length,
-          completed: all.filter((s) => s.status === 'Completed').length,
+          total: statuses.length,
+          pending: statuses.filter((s) => s.status === 'Pending').length,
+          inProgress: statuses.filter((s) => s.status === 'In Progress').length,
+          completed: statuses.filter((s) => s.status === 'Completed').length,
         })
-        setRecent(all.slice(0, 5))
+        setRecent((recentRes.data || []) as SubmissionRow[])
       } catch (err) {
         console.error('Error loading dashboard:', err)
       } finally {

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import DashboardHeader from '@/components/dashboard/DashboardHeader'
 
 interface CompletedRequest {
@@ -243,12 +244,15 @@ function FilePreviewCard({ file, index, removeFile }: {
 }) {
   return (
     <div className="relative bg-white rounded-lg p-3 border-2 border-gray-200 hover:border-umak-blue transition-all group">
-      <div className="aspect-square bg-gray-100 rounded-lg mb-2 flex items-center justify-center overflow-hidden">
+      <div className="relative aspect-square bg-gray-100 rounded-lg mb-2 flex items-center justify-center overflow-hidden">
         {file.type.startsWith('image/') ? (
-          <img
+          <Image
             src={URL.createObjectURL(file)}
             alt={file.name}
-            className="w-full h-full object-cover"
+            fill
+            sizes="160px"
+            unoptimized
+            className="object-cover"
           />
         ) : (
           <div className="text-gray-400 text-2xl">FILE</div>

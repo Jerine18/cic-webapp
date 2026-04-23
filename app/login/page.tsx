@@ -1,6 +1,7 @@
 'use client'
 
 import { Suspense, useState, useEffect } from 'react'
+import Image from 'next/image'
 import { LogIn, UserPlus } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
@@ -107,9 +108,12 @@ function LoginContent() {
 
         {/* Logo */}
         <div className="flex justify-center mb-6">
-          <img
+          <Image
             src="/images/cic_logo.png"
             alt="CIC Logo"
+            width={64}
+            height={64}
+            priority
             className="h-16 w-auto"
           />
         </div>

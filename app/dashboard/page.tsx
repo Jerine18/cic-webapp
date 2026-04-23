@@ -90,7 +90,9 @@ export default function DashboardPage() {
       }
       const { data, error } = await supabaseClient
         .from('submissions')
-        .select('*')
+        .select(
+          'id, name, email, phone, details, type, priority, status, assignee, deadline, department, created_at, updated_at',
+        )
         .order('created_at', { ascending: false })
 
       if (data) {

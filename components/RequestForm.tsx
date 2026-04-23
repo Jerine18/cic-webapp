@@ -257,11 +257,17 @@ export default function RequestForm({
               </div>
 
               <div>
-                <h3 className={subsectionHeaderClass}>Supporting Documents</h3>
-                <label className="block text-sm text-gray-700 mb-1.5 font-metropolis font-semibold">
+                <h3 className={subsectionHeaderClass}>Attach Content</h3>
+                <label
+                  htmlFor="request-attachment"
+                  className="block text-sm text-gray-700 mb-1.5 font-metropolis font-semibold"
+                >
                   Attach Files (Optional)
                 </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-md p-8 text-center hover:border-umak-blue hover:bg-blue-50/50 transition-all cursor-pointer">
+                <label
+                  htmlFor="request-attachment"
+                  className="block border-2 border-dashed border-gray-300 rounded-md p-8 text-center hover:border-umak-blue hover:bg-blue-50/50 transition-all cursor-pointer"
+                >
                   <div className="text-gray-400 mb-3">
                     <svg
                       className="w-12 h-12 mx-auto"
@@ -281,9 +287,16 @@ export default function RequestForm({
                     Click to browse or drag and drop files here
                   </p>
                   <p className="text-xs text-gray-500 font-metropolis">
-                    Supported formats: PDF, DOC, DOCX, JPG, PNG · Maximum file size: 10MB
+                    Supported formats: PNG, JPEG, PDF · Maximum file size: 10MB
                   </p>
-                </div>
+                  <input
+                    id="request-attachment"
+                    type="file"
+                    multiple
+                    accept="image/png,image/jpeg,application/pdf"
+                    className="sr-only"
+                  />
+                </label>
               </div>
             </div>
           )}

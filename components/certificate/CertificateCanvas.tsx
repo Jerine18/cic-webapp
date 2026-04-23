@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState, useEffect, forwardRef, useImperativeHandle } from 'react'
+import NextImage from 'next/image'
 import { CertificateTemplate, TextElement, ImageElement } from '@/types/certificates'
 
 interface CertificateCanvasProps {
@@ -227,13 +228,16 @@ const CertificateCanvas = forwardRef<HTMLCanvasElement, CertificateCanvasProps>(
                 onUpdateImageElement(element.id, { position: { x, y } })
               }
             >
-              <img
+              <NextImage
                 src={element.src}
-                alt="Element"
+                alt="Certificate element"
+                width={element.width}
+                height={element.height}
+                unoptimized
                 style={{
                   width: element.width,
                   height: element.height,
-                  pointerEvents: 'none'
+                  pointerEvents: 'none',
                 }}
               />
             </DraggableElement>
