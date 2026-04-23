@@ -73,3 +73,38 @@ export function getSubmissionTag(serviceType: string, details: string): string {
   const service = findService(serviceType)
   return service?.tags[0] || ''
 }
+
+// Returns the effective target date for a submission, as an ISO date string.
+// For Corporate Requisites the eventDate is nested inside the JSON details blob;
+// for everything else it falls back to the `deadline` column.
+export function getEffectiveDueDate(
+  serviceType: string,
+  details: string,
+  deadline?: string | null,
+): string | null {
+  if (serviceType === 'design') {
+    const parsed = parseDesignDetails(details || '')
+    if (parsed?.eventDate) return parsed.eventDate
+  }
+  return deadline || null
+}
+
+// Used by the admin submissions table: returns a two-line summary.
+export function formatSubmissionSummary(
+  serviceType: string,
+  details: string,
+): { primary: string; secondary: string } {
+  if (serviceType === 'design') {
+    const parsed = parseDesignDetails(details || '')
+    if (parsed) {
+      const primary = parsed.corporateRequisiteType || 'Corporate Requisites'
+      const secondaryParts: string[] = []
+      if (parsed.eventName) secondaryParts.push(`Event: ${parsed.eventName}`)
+      if (parsed.quantity) secondaryParts.push(`Qty: ${parsed.quantity}`)
+      return { primary, secondary: secondaryParts.join(' · ') }
+    }
+  }
+  const raw = details || ''
+  const truncated = raw.length > 80 ? `${raw.slice(0, 80).trim()}...` : raw
+  return { primary: truncated, secondary: '' }
+}

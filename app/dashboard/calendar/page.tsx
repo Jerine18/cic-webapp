@@ -68,9 +68,8 @@ export default function CalendarPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <DashboardHeader
-        title="CIC Calendar" 
+        title="CIC Calendar"
         subtitle="Track availability, deadlines, and team schedules"
-        showStaffPortal={false}
       />
       
       <div className="p-4 sm:p-6 lg:p-8 space-y-6">

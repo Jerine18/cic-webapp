@@ -58,9 +58,8 @@ export default function PhotoDocumentationPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <DashboardHeader
-        title="Photo Documentation Upload" 
+        title="Photo Documentation Upload"
         subtitle="Upload event photos and milestone documentation"
-        showStaffPortal={false}
       />
       
       <div className="p-4 sm:p-6 lg:p-8 space-y-6">

@@ -24,5 +24,4 @@ export const INITIAL_FORM_DATA: FormData = {
   department: '',
   requestDetails: '',
   deadline: '',
-  priority: 'Medium',
 }

@@ -1,32 +1,68 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { 
-  LogOut, 
-  LayoutDashboard, 
-  FileText, 
-  Calendar, 
-  Zap, 
-  Wrench, 
-  Image, 
-  Users, 
+import {
+  LogOut,
+  LayoutDashboard,
+  FileText,
+  Calendar,
+  Zap,
+  Wrench,
+  Image as ImageIcon,
+  Users,
   Settings,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  type LucideIcon,
 } from 'lucide-react'
 import { useSidebar } from '@/contexts/SidebarContext'
 import { useAuth } from '@/contexts/AuthContext'
+import { supabaseClient } from '@/lib/supabase'
 
-const menuItems = [
-  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { label: 'Submissions', href: '/dashboard/submissions', icon: FileText },
-  { label: 'Calendar', href: '/dashboard/calendar', icon: Calendar },
-  { label: 'Automation', href: '/dashboard/automation', icon: Zap },
-  { label: 'Tools', href: '/dashboard/tools', icon: Wrench },
-  { label: 'Photos', href: '/dashboard/photos', icon: Image },
-  { label: 'Team', href: '/dashboard/team', icon: Users },
-  { label: 'Settings', href: '/dashboard/settings', icon: Settings },
+interface MenuItem {
+  label: string
+  href: string
+  icon: LucideIcon
+  badgeKey?: 'pending'
+}
+
+interface MenuSection {
+  label: string
+  items: MenuItem[]
+}
+
+const menuSections: MenuSection[] = [
+  {
+    label: 'Main',
+    items: [
+      { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+      {
+        label: 'Submissions',
+        href: '/dashboard/submissions',
+        icon: FileText,
+        badgeKey: 'pending',
+      },
+      { label: 'Calendar', href: '/dashboard/calendar', icon: Calendar },
+    ],
+  },
+  {
+    label: 'Tools',
+    items: [
+      { label: 'Automation', href: '/dashboard/automation', icon: Zap },
+      { label: 'Tools', href: '/dashboard/tools', icon: Wrench },
+      { label: 'Photos', href: '/dashboard/photos', icon: ImageIcon },
+    ],
+  },
+  {
+    label: 'System',
+    items: [
+      { label: 'Team', href: '/dashboard/team', icon: Users },
+      { label: 'Settings', href: '/dashboard/settings', icon: Settings },
+    ],
+  },
 ]
 
 export default function Sidebar() {
@@ -34,6 +70,28 @@ export default function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const { user, profile, signOut } = useAuth()
+  const [pendingCount, setPendingCount] = useState(0)
+
+  // Live pending-count badge for the Submissions nav item.
+  useEffect(() => {
+    if (!supabaseClient) return
+    let cancelled = false
+    async function fetchPending() {
+      const { count, error } = await supabaseClient!
+        .from('submissions')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'Pending')
+      if (!cancelled && !error && typeof count === 'number') {
+        setPendingCount(count)
+      }
+    }
+    fetchPending()
+    const interval = setInterval(fetchPending, 60000) // refresh every minute
+    return () => {
+      cancelled = true
+      clearInterval(interval)
+    }
+  }, [])
 
   const handleLogout = async () => {
     await signOut()
@@ -71,26 +129,28 @@ export default function Sidebar() {
       >
         {/* Logo Section */}
         <div className={`p-6 border-b border-umak-blue-50 ${isOpen ? '' : 'px-4'}`}>
-        {isOpen ? (
-          <>
-            <h1 className="font-marcellus text-2xl text-umak-yellow mb-1">
-              CIC Portal
-            </h1>
-            <p className="font-metropolis text-xs text-gray-300 tracking-wide">
-              CENTER FOR INTEGRATED COMMUNICATIONS
-            </p>
-            <p className="font-metropolis text-xs text-umak-yellow opacity-75 mt-1">
-              University of Makati
-            </p>
-          </>
-        ) : (
-          <div className="flex justify-center">
-            <div className="w-10 h-10 rounded-lg bg-umak-yellow flex items-center justify-center">
-              <span className="text-umak-blue font-bold font-marcellus text-lg">C</span>
+          <Link
+            href="/"
+            className={`flex items-center gap-3 group ${isOpen ? '' : 'justify-center'}`}
+            title="Back to landing page"
+          >
+            <div
+              className={`relative flex-shrink-0 ${isOpen ? 'w-14 h-14' : 'w-12 h-12'}`}
+            >
+              <Image
+                src="/images/cic_logo.png"
+                alt="CIC Logo"
+                fill
+                className="object-contain"
+              />
             </div>
-          </div>
-        )}
-      </div>
+            {isOpen && (
+              <span className="font-marcellus text-lg text-umak-yellow whitespace-nowrap">
+                Admin Portal
+              </span>
+            )}
+          </Link>
+        </div>
 
       {/* Toggle Button */}
       <button
@@ -106,27 +166,67 @@ export default function Sidebar() {
       </button>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-        {menuItems.map((item) => {
-          const isActive = pathname === item.href
-          const Icon = item.icon
-          
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-metropolis text-sm font-medium group ${
-                isActive
-                  ? 'bg-umak-yellow text-umak-blue font-bold shadow-sm'
-                  : 'text-gray-200 hover:bg-umak-blue-50 hover:text-white'
-              } ${!isOpen ? 'justify-center' : ''}`}
-              title={!isOpen ? item.label : ''}
-            >
-              <Icon size={20} className={`flex-shrink-0 ${isActive ? '' : 'group-hover:scale-110 transition-transform'}`} />
-              {isOpen && <span>{item.label}</span>}
-            </Link>
-          )
-        })}
+      <nav className="flex-1 py-4 overflow-y-auto">
+        {menuSections.map((section, sectionIdx) => (
+          <div
+            key={section.label}
+            className={sectionIdx > 0 ? 'mt-4' : ''}
+          >
+            {isOpen && (
+              <p className="text-[10px] uppercase tracking-widest text-white/40 px-6 mb-1 font-metropolis font-semibold">
+                {section.label}
+              </p>
+            )}
+            <div className="px-4 space-y-1">
+              {section.items.map((item) => {
+                const isActive = pathname === item.href
+                const Icon = item.icon
+                const badge =
+                  item.badgeKey === 'pending' && pendingCount > 0
+                    ? pendingCount
+                    : null
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`relative flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all font-metropolis text-sm font-medium group ${
+                      isActive
+                        ? 'bg-umak-yellow text-umak-blue font-bold shadow-sm'
+                        : 'text-gray-200 hover:bg-umak-blue-50 hover:text-white'
+                    } ${!isOpen ? 'justify-center' : ''}`}
+                    title={!isOpen ? item.label : ''}
+                  >
+                    <Icon
+                      size={20}
+                      className={`flex-shrink-0 ${
+                        isActive
+                          ? ''
+                          : 'group-hover:scale-110 transition-transform'
+                      }`}
+                    />
+                    {isOpen && (
+                      <>
+                        <span className="flex-1">{item.label}</span>
+                        {badge !== null && (
+                          <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-metropolis font-bold">
+                            {badge}
+                          </span>
+                        )}
+                      </>
+                    )}
+                    {!isOpen && badge !== null && (
+                      <span
+                        className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"
+                        aria-label={`${badge} pending`}
+                      />
+                    )}
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        ))}
       </nav>
 
       {/* User Section */}

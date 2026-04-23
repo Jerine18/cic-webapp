@@ -26,7 +26,6 @@ export const requestFormSchema = z.object({
     .min(50, 'Please provide at least 50 characters of detail')
     .max(1000, 'Description is too long'),
   deadline: z.string().min(1, 'Deadline is required'),
-  priority: z.enum(['Low', 'Medium', 'High']),
 })
 
 // Corporate Requisites (design) service-specific schema.

@@ -27,7 +27,6 @@ export interface FormData {
   // Generic request fields (used by services without a custom form)
   requestDetails: string
   deadline: string
-  priority: 'Low' | 'Medium' | 'High'
 
   // Corporate Requisites fields (only filled when that service is selected)
   corporateRequisiteType?: CorporateRequisiteType | ''

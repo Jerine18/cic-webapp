@@ -317,22 +317,6 @@ export default function RequestDetailPage() {
                 </>
               )}
 
-              <div>
-                <p className="text-[10px] text-gray-400 uppercase tracking-widest font-metropolis">
-                  Priority
-                </p>
-                <p
-                  className={`text-sm font-bold font-metropolis mt-0.5 ${
-                    submission.priority === 'High'
-                      ? 'text-red-500'
-                      : submission.priority === 'Medium'
-                        ? 'text-amber-600'
-                        : 'text-emerald-600'
-                  }`}
-                >
-                  ● {submission.priority || 'Medium'}
-                </p>
-              </div>
             </div>
           </div>
 

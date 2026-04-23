@@ -8,6 +8,8 @@ export interface Submission {
   priority: 'Low' | 'Medium' | 'High'
   status: 'Pending' | 'In Progress' | 'Completed'
   assignee?: string
+  deadline?: string | null
+  department?: string | null
   createdAt: Date
   updatedAt: Date
 }

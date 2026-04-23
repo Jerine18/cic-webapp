@@ -107,6 +107,8 @@ export function useRequestForm() {
           draftCitation: validated.draftCitation,
         }),
         deadline: validated.eventDate,
+        // Priority is no longer user-facing; write a default so the (non-nullable)
+        // DB column stays happy without a schema migration.
         priority: 'Medium',
       }
     }
@@ -115,7 +117,7 @@ export function useRequestForm() {
       ...base,
       details: validated.requestDetails,
       deadline: validated.deadline,
-      priority: validated.priority,
+      priority: 'Medium',
     }
   }
 

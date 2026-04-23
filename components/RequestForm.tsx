@@ -242,35 +242,18 @@ export default function RequestForm({
               </div>
 
               <div>
-                <h3 className={subsectionHeaderClass}>Timeline &amp; Priority</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <FormField
-                    label="Target Deadline"
-                    name="deadline"
-                    type="date"
-                    value={formData.deadline}
-                    onChange={(value) => onInputChange('deadline', value)}
-                    error={errors.deadline}
-                    required
-                    min={new Date().toISOString().split('T')[0]}
-                    helpText="Standard processing time is 5-7 business days"
-                  />
-                  <FormField
-                    label="Priority Level"
-                    name="priority"
-                    type="select"
-                    value={formData.priority}
-                    onChange={(value) =>
-                      onInputChange('priority', value as 'Low' | 'Medium' | 'High')
-                    }
-                    required
-                    options={[
-                      { value: 'Low', label: 'Low Priority - Flexible timeline (1-2 weeks)' },
-                      { value: 'Medium', label: 'Medium Priority - Standard processing (5-7 days)' },
-                      { value: 'High', label: 'High Priority - Urgent request (2-3 days)' },
-                    ]}
-                  />
-                </div>
+                <h3 className={subsectionHeaderClass}>Target Deadline</h3>
+                <FormField
+                  label="Target Deadline"
+                  name="deadline"
+                  type="date"
+                  value={formData.deadline}
+                  onChange={(value) => onInputChange('deadline', value)}
+                  error={errors.deadline}
+                  required
+                  min={new Date().toISOString().split('T')[0]}
+                  helpText="Standard processing time is 5-7 business days"
+                />
               </div>
 
               <div>

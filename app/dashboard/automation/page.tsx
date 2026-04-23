@@ -48,9 +48,8 @@ export default function AutomationPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <DashboardHeader
-        title="Automation Workflows" 
+        title="Automation Workflows"
         subtitle="Manage routing, notifications, reminders, and reports"
-        showStaffPortal={false}
       />
       
       <div className="p-4 sm:p-6 lg:p-8 space-y-6">

@@ -40,9 +40,8 @@ export default function UtilityToolsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <DashboardHeader
-        title="Utility Tools Suite" 
+        title="Utility Tools Suite"
         subtitle="Letterhead generator, certificate maker, and form builder"
-        showStaffPortal={false}
       />
       
       <div className="p-4 sm:p-6 lg:p-8 space-y-6">
